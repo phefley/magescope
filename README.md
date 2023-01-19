@@ -14,8 +14,13 @@ I use this tool for my research (BSides DFW 2019) to demonstrate the prevalance 
 ## Getting started with Docker
 
 ### Build the docker magescope image
+```
 docker build --tag magescope:v1 -f Dockerfile .
+```
 
 ### Use the docker magescope image
+```
 docker container run --rm magescope:v1 --target https://www.someurlofinterest.com/path/
+```
+
 
