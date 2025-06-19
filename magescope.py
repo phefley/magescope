@@ -5,6 +5,8 @@ from json import dumps
 from datetime import datetime
 from tabulate import tabulate
 
+import traceback
+
 MAX_URL_CHARS = 120
 
 parser = ArgumentParser()
@@ -38,6 +40,8 @@ if __name__ == '__main__':
             finder.handlePage()
         except Exception as e:
             print("[-] There was an issue working on %s\n%s\n" % (url, e))
+            error_msg = traceback.format_exc()
+            print(error_msg)
         outList.append(finder.asDict())
 
     outData = dumps(outList)

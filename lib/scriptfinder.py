@@ -1,4 +1,5 @@
 import hashlib
+import traceback
 
 from selenium import webdriver  
 from selenium.webdriver.common.keys import Keys  
@@ -242,15 +243,14 @@ class ScriptFinder():
 
     def startDriver(self):
         if not self.__driver:
-            chrome_options = Options()  
+            chrome_options = webdriver.ChromeOptions()  
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--no-sandbox")
             chrome_options.add_argument("--disable-dev-shm-usage")
             chrome_options.add_argument("--load-images=no")
             # Check for your other options and bring them over here
-            self.__driver = webdriver.Chrome(executable_path=self.getDriverPath(), chrome_options=chrome_options)
+            self.__driver = webdriver.Chrome(options=chrome_options)
             self.__driver.set_page_load_timeout(self.getPageTimeout())
-            self.__driver.implicitly_wait(DOM_LOAD_DELAY)
 
     def stopDriver(self):
         if self.__driver:
@@ -267,6 +267,8 @@ class ScriptFinder():
                 self.__driver.get(self.__url)
             except Exception as e:
                 print("[-] Issue while getting {url}\n\n{exception}\n\n".format(url=self.__url, exception=e))
+                error_msg = traceback.format_exc()
+                print(error_msg)
                 self.stopDriver()
                 return None
 
@@ -292,6 +294,8 @@ class ScriptFinder():
                         self.addResource(newResource)
                     if self.__debug:
                         print("[*] DOM Script at {url} with integrity {sri} and tag {tag}".format(url=url, sri=sri, tag=tag))
+            
+            """ CDP Resources are experimental and I removed them... for now.
             # Okay, now go through the page resources and find all of the scripts
             # https://chromedevtools.github.io/devtools-protocol/tot/Page
             resourceTree = self.__driver.execute_cdp_cmd('Page.getResourceTree',{})
@@ -338,5 +342,6 @@ class ScriptFinder():
                                             print("[-] What kind of weird trickery is this?? This was a resource but had no TAG?!?")
                             except Exception as e:
                                 print("[-] Error getting {url}\n\t{error}".format(url=rsc["url"],error=e))
+            """
         self.stopDriver()
 
